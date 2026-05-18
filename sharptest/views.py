@@ -13,4 +13,4 @@ class SharpBookCrud(APIView):
     def get(self,request):
         brand=Brand.objects.all()
         serializer=BrandSerializer(brand,many= True)
-        return Response(serializer.data)
+        return Response(serializer.data,status=status.HTTP_200_OK)
