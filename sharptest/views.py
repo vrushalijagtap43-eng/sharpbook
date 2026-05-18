@@ -22,3 +22,14 @@ class SharpBookCrud(APIView):
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self,request,id):
+        try:
+            brand=Brand.objects.get(id=id)
+        except Brand.DoesNotExist:
+            return Response("not Found",status=status.HTTP_404_NOT_FOUND)
+        serializer=BrandSerializer(brand,data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
