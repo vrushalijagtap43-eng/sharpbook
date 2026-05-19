@@ -2,8 +2,8 @@ from django.shortcuts import render
 from sharptest import serializers
 from rest_framework.views import APIView
 from rest_framework import status
-from sharptest.models import BaseModel,Brand
-from sharptest.serializers import BaseModelSerializer,BrandSerializer
+from sharptest.models import BaseModel,Brand,ServiceCategory
+from sharptest.serializers import BaseModelSerializer,BrandSerializer,ServiceSerializer
 
 from  rest_framework.response import Response
 # Create your views here.
@@ -42,4 +42,12 @@ class SharpBookCrud(APIView):
             return Response("not found",status=status.HTTP_404_NOT_FOUND)
         brand.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class ServicecatogaryCrud(APIView):
+
+    def get(self,request):
+        service=ServiceCategory.objects.all()
+        serializer=ServiceSerializer(service,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
 
