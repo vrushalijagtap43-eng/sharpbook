@@ -95,6 +95,37 @@ class Product(BaseModel):
     def __str__(self):
         return self.name
 
+class Store(BaseModel):
+    """Physical store location."""
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="stores")
 
+    # city = models.ForeignKey(City, on_delete=models.PROTECT, related_name="stores")
+    name = models.CharField(max_length=255)
+    slug = models.SlugField()
+    address_line1 = models.CharField(max_length=255)
+    address_line2 = models.CharField(max_length=255, blank=True)
+    zip_code = models.CharField(max_length=10)
+    phone = models.CharField(max_length=20)
+    email = models.EmailField()
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    image = models.URLField(blank=True, null=True)
+    class Meta:
+        db_table = "stores"
+        unique_together = ["brand", "slug"]
+    def __str__(self):
+        return f"{self.brand.name} - {self.name}"
 
+class Review(BaseModel):
+
+    store = models.ForeignKey(Store,on_delete=models.CASCADE,related_name="store")
+    rating = models.IntegerField(max_length=5)
+    title = models.CharField(max_length=200)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_verified = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
 
