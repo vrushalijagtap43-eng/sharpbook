@@ -48,5 +48,37 @@ class ServiceCategory(BaseModel):
     def __str__(self):
         return f"{self.brand.name} - {self.name}"
 
+class Service(BaseModel):
+    """Individual service offered by the brand."""
+    category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE, related_name="services")
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    duration_minutes = models.PositiveIntegerField()
+    base_price = models.DecimalField(max_digits=10, decimal_places=2)
+    image = models.URLField(blank=True, null=True)
+    class Meta:
+        db_table = "services"
+        ordering = ["category", "name"]
+    def __str__(self):
+        return self.name
+
+
+class Package(BaseModel):
+    """Bundle of services at discounted price."""
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="packages")
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    # services = models.ManyToManyField(Service, related_name="packages")
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    image = models.URLField(blank=True, null=True)
+
+    class Meta:
+        db_table = "packages"
+
+    def __str__(self):
+        return self.name
+
+
 
 
