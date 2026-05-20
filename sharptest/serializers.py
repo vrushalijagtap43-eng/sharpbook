@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from sharptest.models import BaseModel,Brand,ServiceCategory
+from sharptest.models import BaseModel,Brand,ServiceCategory,Package
 
 class BaseModelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,4 +16,10 @@ class BrandSerializer(serializers.ModelSerializer):
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model=ServiceCategory
+        fields="__all__"
+
+
+class PackageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Package
         fields="__all__"
