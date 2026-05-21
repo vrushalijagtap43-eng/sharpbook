@@ -19,5 +19,12 @@ from django.urls import path
 from sharptest import views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('brand/',views.SharpBookCrud.as_view())
+    path('brand/',views.SharpBookCrud.as_view()),
+    path('servicecatogary/',views.ServicecatogaryCrud.as_view()),
+    path('package/',views.PackageCrud.as_view()),
+    path('package/<uuid:id>/',views.PackageCrud.as_view()),
+    path('product/',views.ProductCrud.as_view()),
+    path('product/<uuid:id>/',views.ProductCrud.as_view()),
+    path('review/',views.ReviewCrud.as_view()),
+    path('store/',views.StoreCrud.as_view())
 ]
