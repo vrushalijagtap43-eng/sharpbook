@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 import uuid
 # Create your models here.
@@ -119,7 +120,9 @@ class Store(BaseModel):
 class Review(BaseModel):
 
     store = models.ForeignKey(Store,on_delete=models.CASCADE,related_name="store")
-    rating = models.IntegerField(max_length=5)
+    rating = models.IntegerField(validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5)])
     title = models.CharField(max_length=200)
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
