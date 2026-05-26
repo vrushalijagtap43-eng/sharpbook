@@ -128,3 +128,22 @@ class StoreCrud(APIView):
         serialiazr=StoreSerializer(store,many=True)
         return Response(serialiazr.data)
 
+
+    def post(self,request):
+        serializer=StoreSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self,request,id):
+        try:
+            store=Store.objects.get(id=id)
+        except Store.DoesNotExist:
+            return Response("not found",status=status.HTTP_400_BAD_REQUEST)
+        serializer=StoreSerializer(store,data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_404_NOT_FOUND)
+

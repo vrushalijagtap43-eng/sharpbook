@@ -26,5 +26,6 @@ urlpatterns = [
     path('product/',views.ProductCrud.as_view()),
     path('product/<uuid:id>/',views.ProductCrud.as_view()),
     path('review/',views.ReviewCrud.as_view()),
-    path('store/',views.StoreCrud.as_view())
+    path('store/',views.StoreCrud.as_view()),
+    path('store/<uuid:id>/',views.StoreCrud.as_view())
 ]
