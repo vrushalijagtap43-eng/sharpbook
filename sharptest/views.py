@@ -147,3 +147,12 @@ class StoreCrud(APIView):
             return Response(serializer.data,status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_404_NOT_FOUND)
 
+
+    def delete(self,request,id):
+        try:
+            store=Store.objects.get(id=id)
+        except Store.DoesNotExist:
+            return Response('not found',status=status.HTTP_400_BAD_REQUEST)
+        store.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
