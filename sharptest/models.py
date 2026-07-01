@@ -1,6 +1,9 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.core.exceptions import ValidationError
+
 import uuid
+import re
 # Create your models here.
 class BaseModel(models.Model):
 
@@ -11,6 +14,10 @@ class BaseModel(models.Model):
     updated_at= models.DateTimeField(auto_now=True)
     is_active= models.BooleanField(default=True)
 
+
+    # "abstract = True is used to create an abstract base model in Django. Django does not create a
+    # database table for the abstract model. Instead, its fields and methods are inherited by child models,
+    # which helps avoid code duplication and promotes code reusability."
     class Meta:
         abstract= True
 
@@ -73,6 +80,18 @@ class Package(BaseModel):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     discount_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     image = models.URLField(blank=True, null=True)
+
+    # def clean(self):
+    #     if not re.fullmatch(r'^[A-Z][a-zA-Z]*$', self.name):
+    #         raise ValidationError("Name should start with capital letter numbers are not allowed")
+
+    def clean(self):
+        if not re.fullmatch(r'^[A-Z][a-zA-Z]*( [A-Z][a-zA-Z]*)*$', self.name):
+            raise ValidationError(
+                "Each word must start with a capital letter and contain only letters."
+            )
+
+
 
     class Meta:
         db_table = "packages"

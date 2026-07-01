@@ -1,4 +1,5 @@
 from rest_framework import serializers
+import re
 
 from sharptest.models import BaseModel,Brand,ServiceCategory,Package,Product,Review,Store
 
@@ -23,6 +24,17 @@ class PackageSerializer(serializers.ModelSerializer):
     class Meta:
         model=Package
         fields="__all__"
+
+    def validate_name(self, value):
+        pattern = r'^[A-Z][a-zA-Z]*( [A-Z][a-zA-Z]*)*$'
+
+        if not re.fullmatch(pattern, value):
+            raise serializers.ValidationError(
+                "Each word must start with a capital letter and contain only letters."
+            )
+
+        return value
+
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
