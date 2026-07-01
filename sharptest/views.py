@@ -58,12 +58,22 @@ class ServicecatogaryCrud(APIView):
         return Response(serializer.errors,status= status.HTTP_400_BAD_REQUEST)
 
 class PackageCrud(APIView):
-    def get(self,request):
-        package=Package.objects.all()
-        serializer=PackageSerializer(package,many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+    # def get(self,request):
+    #     package=Package.objects.all()
+    #
+    #     serializer=PackageSerializer(package,many=True)
+    #     return Response(serializer.data,status=status.HTTP_200_OK)
 
+    def get(self, request):
+        search = request.query_params.get("search")
+        if search:
+            package = Package.objects.filter(name__icontains = search)
+        else:
+            package =Package.objects.all()
+            print("Hiiiii")
 
+        serializer = PackageSerializer(package, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self,request):
         serializer=PackageSerializer(data=request.data)
