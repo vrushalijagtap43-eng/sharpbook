@@ -2,6 +2,7 @@ from django.shortcuts import render
 from sharptest import serializers
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework.pagination import LimitOffsetPagination
 from sharptest.models import BaseModel,Brand,ServiceCategory,Package,Product,Review,Store
 from sharptest.serializers import BaseModelSerializer,BrandSerializer,ServiceSerializer,PackageSerializer,ProductSerializer,ReviewSerializer,StoreSerializer
 
@@ -58,6 +59,13 @@ class ServicecatogaryCrud(APIView):
         return Response(serializer.errors,status= status.HTTP_400_BAD_REQUEST)
 
 class PackageCrud(APIView):
+
+    def get(self,request):
+        package = Package.objects.all()
+        pagination = LimitOffsetPagination()
+        result_pagination = pagination.paginate_queryset(package,request)
+        serializer = PackageSerializer(result_pagination,many=True)
+        return Response(serializer.data,status = status.HTTP_200_OK)
     # def get(self,request):
     #     package=Package.objects.all()
     #
@@ -76,19 +84,35 @@ class PackageCrud(APIView):
     #     serializer = PackageSerializer(package, many=True)
     #     return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def get(self,request):
-        search = request.query_params.get("search")
-        brand_id = request.query_params.get("brand_id")
+    # def get(self,request):
+    #     search = request.query_params.get("search")
+    #     brand_id = request.query_params.get("brand_id")
+    #
+    #     package = Package.objects.all()
+    #
+    #     if search:
+    #         package = package.filter(name__icontains = search)
+    #     if brand_id:
+    #         package =package.filter(brand_id = brand_id)
+    #
+    #     serializers = PackageSerializer(package,many = True)
+    #     return Response(serializers.data,status = status.HTTP_200_OK)
 
-        package = Package.objects.all()
+    # JIRA Ticket: SHARP-103 – Sorting API
 
-        if search:
-            package = package.filter(name__icontains = search)
-        if brand_id:
-            package =package.filter(brand_id = brand_id)
+    # def get(self,request):
+    #     sort=request.query_params.get("sort")
+    #     package = Package.objects.all()
+    #
+    #     if sort:
+    #         package=package.order_by(sort)
+    #
+    #     serializer = PackageSerializer(package,many = True)
+    #     return Response(serializer.data,status = status.HTTP_200_OK)
 
-        serializers = PackageSerializer(package,many = True)
-        return Response(serializers.data,status = status.HTTP_200_OK)
+
+
+
 
     def post(self,request):
         serializer=PackageSerializer(data=request.data)
