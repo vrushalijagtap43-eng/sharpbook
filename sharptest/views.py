@@ -61,11 +61,29 @@ class ServicecatogaryCrud(APIView):
 class PackageCrud(APIView):
 
     def get(self,request):
-        package = Package.objects.all()
-        pagination = LimitOffsetPagination()
-        result_pagination = pagination.paginate_queryset(package,request)
-        serializer = PackageSerializer(result_pagination,many=True)
+        min_price=request.query_params.get("min_price")
+        max_price=request.query_params.get("max_price")
+        min_max_price=request.query_params.get("min_max_price")
+        package=Package.objects.all()
+
+
+        if min_price:
+            package = package.filter(price__lte = min_price)
+        if max_price:
+            package = package.filter(price__gte=max_price)
+
+    
+        serializer = PackageSerializer(package,many = True)
         return Response(serializer.data,status = status.HTTP_200_OK)
+
+
+
+    # def get(self,request):
+    #     package = Package.objects.all()
+    #     pagination = LimitOffsetPagination()
+    #     result_pagination = pagination.paginate_queryset(package,request)
+    #     serializer = PackageSerializer(result_pagination,many=True)
+    #     return Response(serializer.data,status = status.HTTP_200_OK)
     # def get(self,request):
     #     package=Package.objects.all()
     #
