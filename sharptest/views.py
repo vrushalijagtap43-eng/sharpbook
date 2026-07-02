@@ -64,16 +64,31 @@ class PackageCrud(APIView):
     #     serializer=PackageSerializer(package,many=True)
     #     return Response(serializer.data,status=status.HTTP_200_OK)
 
-    def get(self, request):
-        search = request.query_params.get("search")
-        if search:
-            package = Package.objects.filter(name__icontains = search)
-        else:
-            package =Package.objects.all()
-            print("Hiiiii")
+    # def get(self, request):
+    #     search = request.query_params.get("search")
+    #
+    #     if search:
+    #         package = Package.objects.filter(name__icontains = search)
+    #     else:
+    #         package =Package.objects.all()
+    #         print("Hiiiii")
+    #
+    #     serializer = PackageSerializer(package, many=True)
+    #     return Response(serializer.data, status=status.HTTP_200_OK)
 
-        serializer = PackageSerializer(package, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def get(self,request):
+        search = request.query_params.get("search")
+        brand_id = request.query_params.get("brand_id")
+
+        package = Package.objects.all()
+
+        if search:
+            package = package.filter(name__icontains = search)
+        if brand_id:
+            package =package.filter(brand_id = brand_id)
+
+        serializers = PackageSerializer(package,many = True)
+        return Response(serializers.data,status = status.HTTP_200_OK)
 
     def post(self,request):
         serializer=PackageSerializer(data=request.data)
