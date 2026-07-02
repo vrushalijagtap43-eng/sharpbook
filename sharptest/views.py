@@ -2,6 +2,7 @@ from django.shortcuts import render
 from sharptest import serializers
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework.pagination import LimitOffsetPagination
 from sharptest.models import BaseModel,Brand,ServiceCategory,Package,Product,Review,Store
 from sharptest.serializers import BaseModelSerializer,BrandSerializer,ServiceSerializer,PackageSerializer,ProductSerializer,ReviewSerializer,StoreSerializer
 
@@ -58,6 +59,13 @@ class ServicecatogaryCrud(APIView):
         return Response(serializer.errors,status= status.HTTP_400_BAD_REQUEST)
 
 class PackageCrud(APIView):
+
+    def get(self,request):
+        package = Package.objects.all()
+        pagination = LimitOffsetPagination()
+        result_pagination = pagination.paginate_queryset(package,request)
+        serializer = PackageSerializer(result_pagination,many=True)
+        return Response(serializer.data,status = status.HTTP_200_OK)
     # def get(self,request):
     #     package=Package.objects.all()
     #
@@ -92,15 +100,19 @@ class PackageCrud(APIView):
 
     # JIRA Ticket: SHARP-103 – Sorting API
 
-    def get(self,request):
-        sort=request.query_params.get("sort")
-        package = Package.objects.all()
+    # def get(self,request):
+    #     sort=request.query_params.get("sort")
+    #     package = Package.objects.all()
+    #
+    #     if sort:
+    #         package=package.order_by(sort)
+    #
+    #     serializer = PackageSerializer(package,many = True)
+    #     return Response(serializer.data,status = status.HTTP_200_OK)
 
-        if sort:
-            package=package.order_by(sort)
 
-        serializer = PackageSerializer(package,many = True)
-        return Response(serializer.data,status = status.HTTP_200_OK)
+
+
 
     def post(self,request):
         serializer=PackageSerializer(data=request.data)
